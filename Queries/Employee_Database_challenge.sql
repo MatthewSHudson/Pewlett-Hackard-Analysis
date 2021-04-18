@@ -59,7 +59,7 @@ FROM mentorship_eligibility
 GROUP BY title
 ORDER BY 1 DESC;
 
--- Make a 
+-- Make a copy of the uniques_tables but with a to_date column
 SELECT DISTINCT ON (emp_no) emp_no,
 first_name,
 last_name,
@@ -69,6 +69,7 @@ to_date
 FROM retirement_titles
 ORDER BY emp_no, to_date DESC;
 
+-- Create a table of current employees who will retire by role
 -- DROP TABLE current_titles;
 SELECT  COUNT(title) AS retirees,
 		title 
@@ -78,6 +79,7 @@ WHERE to_date = '9999-01-01'
 GROUP BY title
 ORDER BY 1 DESC;
 
+-- Create a table that displays the mentee:mentor ratio per role
 SELECT  (ct.retirees::float) / mt.mentors AS mentees_per_mentor, 
 		ct.title
 FROM current_titles AS ct
