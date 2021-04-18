@@ -41,3 +41,47 @@ INNER JOIN titles AS ti
 WHERE (de.to_date = '9999-01-01')
 	AND (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31')
 ORDER BY (e.emp_no);
+
+-- Check to see how many Managers are eligible to mentor (0)
+SELECT COUNT(*) FROM mentorship_eligibility
+WHERE title = 'Manager';
+
+-- Get the number of employees who are retiring and are current employees
+SELECT COUNT(*) FROM uniques_titles_with_date
+WHERE to_date = '9999-01-01';
+
+-- Make a table to display the number of eligible mentors per role
+-- DROP TABLE mentorship_titles;
+SELECT  COUNT(title) AS mentors,
+		title
+-- INTO mentorship_titles
+FROM mentorship_eligibility
+GROUP BY title
+ORDER BY 1 DESC;
+
+-- Make a 
+SELECT DISTINCT ON (emp_no) emp_no,
+first_name,
+last_name,
+title,
+to_date
+-- INTO uniques_titles_with_date
+FROM retirement_titles
+ORDER BY emp_no, to_date DESC;
+
+-- DROP TABLE current_titles;
+SELECT  COUNT(title) AS retirees,
+		title 
+-- INTO current_titles
+FROM uniques_titles_with_date
+WHERE to_date = '9999-01-01'
+GROUP BY title
+ORDER BY 1 DESC;
+
+SELECT  (ct.retirees::float) / mt.mentors AS mentees_per_mentor, 
+		ct.title
+FROM current_titles AS ct
+LEFT JOIN mentorship_titles AS mt
+ON (ct.title = mt.title)
+ORDER BY 1 DESC;
+
